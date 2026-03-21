@@ -15,14 +15,13 @@ interface TriageResult {
   ai_risk_level: string | null;
   ai_draft_reply: string | null;
   ai_reasoning: string | null;
-  ai_alternative_interpretations: string | null;
   ai_clarifying_questions: string | null;
 }
 
 const riskStyles: Record<string, { bg: string; text: string; border: string }> = {
-  High: { bg: "bg-destructive/10", text: "text-destructive", border: "border-destructive/30" },
-  Medium: { bg: "bg-warning/10", text: "text-warning", border: "border-warning/30" },
-  Low: { bg: "bg-success/10", text: "text-success", border: "border-success/30" },
+  "High Risk": { bg: "bg-destructive/10", text: "text-destructive", border: "border-destructive/30" },
+  "Uncertain – Needs Clarification": { bg: "bg-warning/10", text: "text-warning", border: "border-warning/30" },
+  "Low Risk — based on available information": { bg: "bg-success/10", text: "text-success", border: "border-success/30" },
 };
 
 const Triage = () => {
@@ -136,7 +135,6 @@ const Triage = () => {
             />
             <ExpandExplanation
               reasoning={result.ai_reasoning}
-              alternativeInterpretations={result.ai_alternative_interpretations}
               clarifyingQuestions={result.ai_clarifying_questions}
             />
           </div>
