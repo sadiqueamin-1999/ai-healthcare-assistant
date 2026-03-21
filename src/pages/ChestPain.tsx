@@ -418,9 +418,16 @@ const ChestPain = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {ASSOCIATED_SYMPTOMS.map((symptom) => (
                 <label key={symptom} className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
-                  <Checkbox
+                <Checkbox
                     checked={associatedSymptoms.includes(symptom)}
-                    onCheckedChange={() => setAssociatedSymptoms(toggleItem(associatedSymptoms, symptom))}
+                    onCheckedChange={() => {
+                      if (symptom === "None") {
+                        setAssociatedSymptoms(associatedSymptoms.includes("None") ? [] : ["None"]);
+                      } else {
+                        const updated = toggleItem(associatedSymptoms.filter(s => s !== "None"), symptom);
+                        setAssociatedSymptoms(updated);
+                      }
+                    }}
                     disabled={isLoading}
                   />
                   {symptom}
