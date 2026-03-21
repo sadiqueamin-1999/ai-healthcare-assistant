@@ -131,7 +131,23 @@ J. SEX MODIFIER:
 
 K. IMPROVES WITH REST:
    • No (does NOT improve): +2
-   • Yes: 0
+    • Yes: 0
+
+═══════════════════════════════════════════
+MUSCULOSKELETAL OVERRIDE RULES (apply BEFORE totalling)
+═══════════════════════════════════════════
+
+RULE 1 — "Pain only with movement or touch" is selected:
+   • Override E (Triggers): set exertion trigger score to 0 (ignore "Exercise or exertion")
+   • Override A (Pain Quality): set "Sudden severe pressure" score to 0
+   • Override J (Sex Modifier): set to 0
+   • Treat entire presentation as musculoskeletal pattern — do NOT score it as exertional cardiac pain
+   • Note this override explicitly in aiReasoning
+
+RULE 2 — "Sharp/stabbing pain" AND "Pain only with movement or touch" are BOTH selected:
+   • Cap total A (Pain Quality) score at +1 maximum (regardless of other pain types selected)
+   • Override E (Triggers): set exertion trigger score to 0 (ignore "Exercise or exertion")
+   • Note this override explicitly in aiReasoning
 
 ═══════════════════════════════════════════
 RISK CLASSIFICATION (based on TOTAL score):
