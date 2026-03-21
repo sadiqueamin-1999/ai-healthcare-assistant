@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ExpandExplanation from "@/components/ExpandExplanation";
+import { fleschKincaidGrade, gradeLabel } from "@/lib/readability";
 import { toast } from "sonner";
-import { Mail, Brain, Footprints, AlertTriangle, BookOpen, Loader2 } from "lucide-react";
+import { Mail, Brain, Footprints, AlertTriangle, BookOpen, Loader2, GraduationCap, ArrowDown } from "lucide-react";
 
 interface LetterResult {
   id: string;
