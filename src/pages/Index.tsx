@@ -129,7 +129,7 @@ const Index = () => {
 
       {/* Feature Cards */}
       <section className="mx-auto max-w-5xl px-4 pb-20">
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {featureCards.map((card) => (
             <Link key={card.to} to={card.to} className="group">
               <Card
