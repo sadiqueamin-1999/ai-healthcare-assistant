@@ -101,6 +101,12 @@ const riskConfig: Record<string, { bg: string; text: string; border: string; ico
     border: "border-warning/30",
     icon: <AlertTriangle className="h-4 w-4" />,
   },
+  "Uncertain – Needs Clarification": {
+    bg: "bg-accent/10",
+    text: "text-accent-foreground",
+    border: "border-accent/30",
+    icon: <AlertTriangle className="h-4 w-4" />,
+  },
   "Low — but with safety advice": {
     bg: "bg-success/10",
     text: "text-success",
