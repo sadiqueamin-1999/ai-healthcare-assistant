@@ -9,48 +9,51 @@ All colors MUST be HSL.
 @layer base {
   :root {
     --background: 210 20% 98%;
-    --foreground: 215 25% 15%;
+    --foreground: 215 28% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
+    --card-foreground: 215 28% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
+    --popover-foreground: 215 28% 12%;
 
-    --primary: 199 89% 38%;
+    --primary: 211 100% 36%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 199 30% 94%;
-    --secondary-foreground: 199 89% 28%;
+    --secondary: 211 40% 95%;
+    --secondary-foreground: 211 100% 30%;
 
     --muted: 210 20% 95%;
-    --muted-foreground: 215 15% 50%;
+    --muted-foreground: 215 15% 46%;
 
-    --accent: 199 30% 94%;
-    --accent-foreground: 199 89% 28%;
+    --accent: 211 40% 95%;
+    --accent-foreground: 211 100% 30%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 214 20% 90%;
     --input: 214 20% 90%;
-    --ring: 199 89% 38%;
+    --ring: 211 100% 36%;
 
-    --radius: 0.625rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 199 89% 38%;
+    --sidebar-primary: 211 100% 36%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 199 30% 94%;
-    --sidebar-accent-foreground: 199 89% 28%;
+    --sidebar-accent: 211 40% 95%;
+    --sidebar-accent-foreground: 211 100% 30%;
     --sidebar-border: 214 20% 90%;
-    --sidebar-ring: 199 89% 38%;
+    --sidebar-ring: 211 100% 36%;
 
     --success: 152 60% 40%;
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
+
+    --hero-gradient-from: 211 100% 36%;
+    --hero-gradient-to: 211 60% 96%;
   }
 
   .dark {
