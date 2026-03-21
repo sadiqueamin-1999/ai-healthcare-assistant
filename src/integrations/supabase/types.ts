@@ -14,7 +14,96 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clinical_notes: {
+        Row: {
+          ai_key_points: string | null
+          ai_reasoning: string | null
+          ai_summary: string | null
+          ai_timeline: string | null
+          id: string
+          note_text: string
+          submitted_at: string
+        }
+        Insert: {
+          ai_key_points?: string | null
+          ai_reasoning?: string | null
+          ai_summary?: string | null
+          ai_timeline?: string | null
+          id?: string
+          note_text: string
+          submitted_at?: string
+        }
+        Update: {
+          ai_key_points?: string | null
+          ai_reasoning?: string | null
+          ai_summary?: string | null
+          ai_timeline?: string | null
+          id?: string
+          note_text?: string
+          submitted_at?: string
+        }
+        Relationships: []
+      }
+      patient_letters: {
+        Row: {
+          ai_important_warnings: string | null
+          ai_next_steps: string | null
+          ai_plain_english: string | null
+          ai_reasoning: string | null
+          id: string
+          letter_text: string
+          submitted_at: string
+        }
+        Insert: {
+          ai_important_warnings?: string | null
+          ai_next_steps?: string | null
+          ai_plain_english?: string | null
+          ai_reasoning?: string | null
+          id?: string
+          letter_text: string
+          submitted_at?: string
+        }
+        Update: {
+          ai_important_warnings?: string | null
+          ai_next_steps?: string | null
+          ai_plain_english?: string | null
+          ai_reasoning?: string | null
+          id?: string
+          letter_text?: string
+          submitted_at?: string
+        }
+        Relationships: []
+      }
+      patient_messages: {
+        Row: {
+          ai_draft_reply: string | null
+          ai_reasoning: string | null
+          ai_risk_level: string | null
+          ai_summary: string | null
+          id: string
+          message_text: string
+          submitted_at: string
+        }
+        Insert: {
+          ai_draft_reply?: string | null
+          ai_reasoning?: string | null
+          ai_risk_level?: string | null
+          ai_summary?: string | null
+          id?: string
+          message_text: string
+          submitted_at?: string
+        }
+        Update: {
+          ai_draft_reply?: string | null
+          ai_reasoning?: string | null
+          ai_risk_level?: string | null
+          ai_summary?: string | null
+          id?: string
+          message_text?: string
+          submitted_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
