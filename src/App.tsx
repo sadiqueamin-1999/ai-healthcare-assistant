@@ -8,6 +8,7 @@ import Index from "./pages/Index.tsx";
 import Notes from "./pages/Notes.tsx";
 import Explain from "./pages/Explain.tsx";
 import Triage from "./pages/Triage.tsx";
+import ChestPain from "./pages/ChestPain.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import Analytics from "./pages/Analytics.tsx";
 import NotFound from "./pages/NotFound.tsx";
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/notes" element={<Notes />} />
           <Route path="/explain" element={<Explain />} />
           <Route path="/triage" element={<Triage />} />
+          <Route path="/chestpain" element={<ChestPain />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/analytics" element={<Analytics />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
