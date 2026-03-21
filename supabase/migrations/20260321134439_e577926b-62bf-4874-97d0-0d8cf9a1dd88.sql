@@ -1,0 +1,1 @@
+ALTER TABLE public.patient_messages ADD COLUMN safety_flag boolean NOT NULL DEFAULT false;

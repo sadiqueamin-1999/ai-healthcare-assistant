@@ -82,6 +82,7 @@ export type Database = {
           ai_summary: string | null
           id: string
           message_text: string
+          safety_flag: boolean
           submitted_at: string
         }
         Insert: {
@@ -91,6 +92,7 @@ export type Database = {
           ai_summary?: string | null
           id?: string
           message_text: string
+          safety_flag?: boolean
           submitted_at?: string
         }
         Update: {
@@ -100,6 +102,7 @@ export type Database = {
           ai_summary?: string | null
           id?: string
           message_text?: string
+          safety_flag?: boolean
           submitted_at?: string
         }
         Relationships: []
