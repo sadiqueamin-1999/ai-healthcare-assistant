@@ -238,7 +238,7 @@ serve(async (req) => {
                   },
                   aiReasoning: {
                     type: "string",
-                    description: "Full score breakdown by category (A-J) with points awarded and final classification explanation.",
+                    description: "Full score breakdown by category (A-K) with points awarded and final classification explanation.",
                   },
                   aiAdvice: {
                     type: "string",
