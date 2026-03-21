@@ -17,33 +17,68 @@ import {
   Brain,
   MessageSquare,
   Stethoscope,
+  User,
+  Activity,
+  ListChecks,
 } from "lucide-react";
 
-const PAIN_DESCRIPTIONS = [
+// --- Option constants ---
+
+const SEX_OPTIONS = ["Male", "Female", "Intersex", "Prefer not to say"];
+
+const PAIN_TYPE_OPTIONS = [
+  "Sudden severe pressure",
   "Tightness",
-  "Pressure",
   "Heaviness",
-  "Sharp",
-  "Stabbing",
-  "Burning",
+  "Squeezing sensation",
+  "Sharp/stabbing pain",
+  "Burning/heartburn-like",
   "Indigestion-like",
-  "Other",
+  "Muscle or chest wall tenderness",
+  "Pain only with movement or touch",
 ];
 
+const RADIATION_OPTIONS = ["None", "Jaw", "Left arm", "Right arm", "Back", "Neck"];
+
+const DURATION_OPTIONS = ["Seconds", "Minutes", "15 minutes or more", "Intermittent episodes"];
+
 const ONSET_OPTIONS = ["Sudden", "Gradual"];
-const DURATION_OPTIONS = ["Seconds", "Minutes", "Hours", "Intermittent"];
-const RADIATION_OPTIONS = ["None", "Arm", "Jaw", "Back", "Neck"];
+
+const TRIGGER_OPTIONS = [
+  "Exercise or exertion",
+  "Stress or anxiety",
+  "Eating",
+  "Deep breathing",
+  "Lying down",
+  "Coughing",
+  "No clear trigger",
+];
 
 const ASSOCIATED_SYMPTOMS = [
-  "Breathlessness",
-  "Sweating",
+  "Shortness of breath",
   "Nausea",
   "Vomiting",
   "Dizziness",
+  "Lightheadedness",
+  "Cold sweat",
   "Palpitations",
   "Fever",
   "Cough",
+  "Anxiety / panic-like symptoms",
+  "Skin sensitivity or rash (rule out shingles)",
 ];
+
+const CAUSE_CATEGORIES = [
+  "Cardiac (e.g., heart attack, angina)",
+  "Digestive (GERD, gallbladder)",
+  "Lung-related (PE, pneumonia, pleurisy)",
+  "Musculoskeletal (costochondritis, strain)",
+  "Other (anxiety, shingles)",
+];
+
+const SMOKING_OPTIONS = ["No", "Yes", "Current smoker", "Ex-smoker"];
+
+// --- Types ---
 
 interface AssessmentResult {
   id: string;
@@ -74,34 +109,60 @@ const riskConfig: Record<string, { bg: string; text: string; border: string; ico
   },
 };
 
-const defaultStyle = { bg: "bg-muted", text: "text-foreground", border: "border-border", icon: <HeartPulse className="h-4 w-4" /> };
+const defaultStyle = {
+  bg: "bg-muted",
+  text: "text-foreground",
+  border: "border-border",
+  icon: <HeartPulse className="h-4 w-4" />,
+};
+
+// --- Helper for multi-select toggle ---
+function toggleItem(arr: string[], item: string) {
+  return arr.includes(item) ? arr.filter((i) => i !== item) : [...arr, item];
+}
+
+// --- Component ---
 
 const ChestPain = () => {
+  // 1. Patient Information
+  const [sex, setSex] = useState("");
   const [age, setAge] = useState("");
   const [pastMedicalHistory, setPastMedicalHistory] = useState("");
   const [familyHistory, setFamilyHistory] = useState("");
   const [smokingHistory, setSmokingHistory] = useState("");
   const [medications, setMedications] = useState("");
 
-  const [painDescription, setPainDescription] = useState("");
-  const [onset, setOnset] = useState("");
+  // 2. Chest Pain Characteristics
+  const [painTypes, setPainTypes] = useState<string[]>([]);
+  const [radiation, setRadiation] = useState<string[]>([]);
   const [duration, setDuration] = useState("");
-  const [triggers, setTriggers] = useState("");
+  const [onset, setOnset] = useState("");
+  const [triggers, setTriggers] = useState<string[]>([]);
   const [improvesWithRest, setImprovesWithRest] = useState("");
-  const [radiation, setRadiation] = useState("");
+
+  // 3. Associated Symptoms
   const [associatedSymptoms, setAssociatedSymptoms] = useState<string[]>([]);
 
+  // 4. Potential Cause Categories
+  const [causeCategories, setCauseCategories] = useState<string[]>([]);
+
+  // UI state
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<AssessmentResult | null>(null);
   const [reasoningOpen, setReasoningOpen] = useState(false);
 
-  const toggleSymptom = (symptom: string) => {
-    setAssociatedSymptoms((prev) =>
-      prev.includes(symptom) ? prev.filter((s) => s !== symptom) : [...prev, symptom]
-    );
-  };
-
-  const canSubmit = age && painDescription && onset && duration && improvesWithRest;
+  const canSubmit =
+    sex &&
+    age &&
+    painTypes.length > 0 &&
+    radiation.length > 0 &&
+    duration &&
+    onset &&
+    triggers.length > 0 &&
+    improvesWithRest &&
+    associatedSymptoms.length > 0 &&
+    familyHistory &&
+    smokingHistory;
 
   const handleSubmit = async () => {
     if (!canSubmit) {
@@ -117,17 +178,19 @@ const ChestPain = () => {
       const { data, error } = await supabase.functions.invoke("assess-chest-pain", {
         body: {
           age,
-          painDescription,
+          painDescription: painTypes.join(", "),
           onset,
           duration,
-          triggers: triggers || "",
+          triggers: triggers.join(", "),
           improvesWithRest,
-          radiation: radiation || "",
+          radiation: radiation.join(", "),
           associatedSymptoms: associatedSymptoms.join(", "),
           pastMedicalHistory: pastMedicalHistory || "",
-          familyHistory: familyHistory || "",
-          smokingHistory: smokingHistory || "",
+          familyHistory,
+          smokingHistory,
           medications: medications || "",
+          sex,
+          causeCategories: causeCategories.join(", "),
         },
       });
 
@@ -164,26 +227,39 @@ const ChestPain = () => {
       </header>
 
       <main className="mx-auto max-w-3xl px-4 py-8 space-y-6">
-        {/* Patient Information */}
+        {/* 1. Patient Information */}
         <Card className="shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
-              <Stethoscope className="h-4 w-4 text-primary" />
+              <User className="h-4 w-4 text-primary" />
               Patient Information
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <FieldGroup label="Age *">
-              <Input
-                type="number"
-                min={0}
-                max={150}
-                placeholder="e.g. 55"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
-                disabled={isLoading}
-              />
-            </FieldGroup>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FieldGroup label="Sex *">
+                <Select value={sex} onValueChange={setSex} disabled={isLoading}>
+                  <SelectTrigger><SelectValue placeholder="Select sex" /></SelectTrigger>
+                  <SelectContent>
+                    {SEX_OPTIONS.map((s) => (
+                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FieldGroup>
+              <FieldGroup label="Age *">
+                <Input
+                  type="number"
+                  min={0}
+                  max={150}
+                  placeholder="e.g. 55"
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                  disabled={isLoading}
+                />
+              </FieldGroup>
+            </div>
+
             <FieldGroup label="Past Medical History">
               <Textarea
                 placeholder="e.g. Hypertension, Type 2 Diabetes"
@@ -193,24 +269,28 @@ const ChestPain = () => {
                 className="min-h-[80px]"
               />
             </FieldGroup>
-            <FieldGroup label="Family History">
-              <Textarea
-                placeholder="e.g. Father had MI at age 50"
-                value={familyHistory}
-                onChange={(e) => setFamilyHistory(e.target.value)}
-                disabled={isLoading}
-                className="min-h-[80px]"
-              />
+
+            <FieldGroup label="Family History of Heart Disease *">
+              <Select value={familyHistory} onValueChange={setFamilyHistory} disabled={isLoading}>
+                <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Yes">Yes</SelectItem>
+                  <SelectItem value="No">No</SelectItem>
+                </SelectContent>
+              </Select>
             </FieldGroup>
-            <FieldGroup label="Smoking History">
-              <Textarea
-                placeholder="e.g. 20 pack-years, quit 2 years ago"
-                value={smokingHistory}
-                onChange={(e) => setSmokingHistory(e.target.value)}
-                disabled={isLoading}
-                className="min-h-[80px]"
-              />
+
+            <FieldGroup label="Smoking History *">
+              <Select value={smokingHistory} onValueChange={setSmokingHistory} disabled={isLoading}>
+                <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                <SelectContent>
+                  {SMOKING_OPTIONS.map((s) => (
+                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </FieldGroup>
+
             <FieldGroup label="Current Medications">
               <Textarea
                 placeholder="e.g. Amlodipine 5mg, Metformin 500mg"
@@ -223,37 +303,46 @@ const ChestPain = () => {
           </CardContent>
         </Card>
 
-        {/* Chest Pain Details */}
+        {/* 2. Chest Pain Characteristics */}
         <Card className="shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <HeartPulse className="h-4 w-4 text-primary" />
-              Chest Pain Details
+              Chest Pain Characteristics
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <FieldGroup label="Pain Description *">
-              <Select value={painDescription} onValueChange={setPainDescription} disabled={isLoading}>
-                <SelectTrigger><SelectValue placeholder="Select type of pain" /></SelectTrigger>
-                <SelectContent>
-                  {PAIN_DESCRIPTIONS.map((p) => (
-                    <SelectItem key={p} value={p}>{p}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <FieldGroup label="Pain Type * (select all that apply)">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {PAIN_TYPE_OPTIONS.map((p) => (
+                  <label key={p} className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+                    <Checkbox
+                      checked={painTypes.includes(p)}
+                      onCheckedChange={() => setPainTypes(toggleItem(painTypes, p))}
+                      disabled={isLoading}
+                    />
+                    {p}
+                  </label>
+                ))}
+              </div>
+            </FieldGroup>
+
+            <FieldGroup label="Radiation * (select all that apply)">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {RADIATION_OPTIONS.map((r) => (
+                  <label key={r} className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+                    <Checkbox
+                      checked={radiation.includes(r)}
+                      onCheckedChange={() => setRadiation(toggleItem(radiation, r))}
+                      disabled={isLoading}
+                    />
+                    {r}
+                  </label>
+                ))}
+              </div>
             </FieldGroup>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <FieldGroup label="Onset *">
-                <Select value={onset} onValueChange={setOnset} disabled={isLoading}>
-                  <SelectTrigger><SelectValue placeholder="Select onset" /></SelectTrigger>
-                  <SelectContent>
-                    {ONSET_OPTIONS.map((o) => (
-                      <SelectItem key={o} value={o}>{o}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FieldGroup>
               <FieldGroup label="Duration *">
                 <Select value={duration} onValueChange={setDuration} disabled={isLoading}>
                   <SelectTrigger><SelectValue placeholder="Select duration" /></SelectTrigger>
@@ -264,16 +353,31 @@ const ChestPain = () => {
                   </SelectContent>
                 </Select>
               </FieldGroup>
+              <FieldGroup label="Onset *">
+                <Select value={onset} onValueChange={setOnset} disabled={isLoading}>
+                  <SelectTrigger><SelectValue placeholder="Select onset" /></SelectTrigger>
+                  <SelectContent>
+                    {ONSET_OPTIONS.map((o) => (
+                      <SelectItem key={o} value={o}>{o}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FieldGroup>
             </div>
 
-            <FieldGroup label="Triggers">
-              <Textarea
-                placeholder="e.g. Walking upstairs, eating heavy meals"
-                value={triggers}
-                onChange={(e) => setTriggers(e.target.value)}
-                disabled={isLoading}
-                className="min-h-[80px]"
-              />
+            <FieldGroup label="Triggers * (select all that apply)">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {TRIGGER_OPTIONS.map((t) => (
+                  <label key={t} className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+                    <Checkbox
+                      checked={triggers.includes(t)}
+                      onCheckedChange={() => setTriggers(toggleItem(triggers, t))}
+                      disabled={isLoading}
+                    />
+                    {t}
+                  </label>
+                ))}
+              </div>
             </FieldGroup>
 
             <FieldGroup label="Improves with Rest *">
@@ -282,43 +386,61 @@ const ChestPain = () => {
                 <SelectContent>
                   <SelectItem value="Yes">Yes</SelectItem>
                   <SelectItem value="No">No</SelectItem>
-                  <SelectItem value="Unsure">Unsure</SelectItem>
                 </SelectContent>
               </Select>
-            </FieldGroup>
-
-            <FieldGroup label="Radiation">
-              <Select value={radiation} onValueChange={setRadiation} disabled={isLoading}>
-                <SelectTrigger><SelectValue placeholder="Select radiation" /></SelectTrigger>
-                <SelectContent>
-                  {RADIATION_OPTIONS.map((r) => (
-                    <SelectItem key={r} value={r}>{r}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FieldGroup>
-
-            <FieldGroup label="Associated Symptoms">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {ASSOCIATED_SYMPTOMS.map((symptom) => (
-                  <label
-                    key={symptom}
-                    className="flex items-center gap-2 text-sm text-foreground cursor-pointer"
-                  >
-                    <Checkbox
-                      checked={associatedSymptoms.includes(symptom)}
-                      onCheckedChange={() => toggleSymptom(symptom)}
-                      disabled={isLoading}
-                    />
-                    {symptom}
-                  </label>
-                ))}
-              </div>
             </FieldGroup>
           </CardContent>
         </Card>
 
-        {/* Submit */}
+        {/* 3. Associated Symptoms */}
+        <Card className="shadow-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Activity className="h-4 w-4 text-primary" />
+              Associated Symptoms * (select all that apply)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {ASSOCIATED_SYMPTOMS.map((symptom) => (
+                <label key={symptom} className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+                  <Checkbox
+                    checked={associatedSymptoms.includes(symptom)}
+                    onCheckedChange={() => setAssociatedSymptoms(toggleItem(associatedSymptoms, symptom))}
+                    disabled={isLoading}
+                  />
+                  {symptom}
+                </label>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 4. Potential Cause Categories */}
+        <Card className="shadow-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <ListChecks className="h-4 w-4 text-primary" />
+              Potential Cause Categories (optional — patient self-selection)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {CAUSE_CATEGORIES.map((cat) => (
+                <label key={cat} className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+                  <Checkbox
+                    checked={causeCategories.includes(cat)}
+                    onCheckedChange={() => setCauseCategories(toggleItem(causeCategories, cat))}
+                    disabled={isLoading}
+                  />
+                  {cat}
+                </label>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 5. Submit */}
         <div className="flex justify-end">
           <Button size="lg" onClick={handleSubmit} disabled={isLoading || !canSubmit}>
             {isLoading ? (
@@ -335,10 +457,9 @@ const ChestPain = () => {
           </Button>
         </div>
 
-        {/* Results */}
+        {/* 6. Results */}
         {result && (
           <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
-            {/* Risk Badge */}
             <Card className={`shadow-sm ${style.border} ${style.bg}`}>
               <CardContent className="pt-6 pb-5 flex items-start gap-3">
                 <span className={`mt-0.5 ${style.text}`}>{style.icon}</span>
@@ -350,7 +471,6 @@ const ChestPain = () => {
               </CardContent>
             </Card>
 
-            {/* Summary */}
             {result.ai_summary && (
               <Card className="shadow-sm">
                 <CardHeader className="pb-3">
@@ -365,7 +485,6 @@ const ChestPain = () => {
               </Card>
             )}
 
-            {/* Advice */}
             {result.ai_advice && (
               <Card className="shadow-sm">
                 <CardHeader className="pb-3">
@@ -380,7 +499,6 @@ const ChestPain = () => {
               </Card>
             )}
 
-            {/* Reasoning (collapsible) */}
             {result.ai_reasoning && (
               <Card className="shadow-sm">
                 <button
