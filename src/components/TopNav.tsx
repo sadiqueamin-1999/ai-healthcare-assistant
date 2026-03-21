@@ -5,6 +5,7 @@ import {
   ShieldAlert,
   FileText,
   Mail,
+  HeartPulse,
   LayoutDashboard,
   BarChart3,
 } from "lucide-react";
@@ -14,6 +15,7 @@ const navItems = [
   { to: "/triage", label: "Triage", icon: ShieldAlert },
   { to: "/notes", label: "Notes", icon: FileText },
   { to: "/explain", label: "Explain", icon: Mail },
+  { to: "/chestpain", label: "Chest Pain", icon: HeartPulse },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
 ];
