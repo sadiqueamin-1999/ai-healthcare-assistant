@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      chest_pain_assessments: {
+        Row: {
+          age: number
+          ai_advice: string | null
+          ai_reasoning: string | null
+          ai_risk_level: string | null
+          ai_summary: string | null
+          associated_symptoms: string | null
+          duration: string
+          family_history: string | null
+          id: string
+          improves_with_rest: string
+          medications: string | null
+          onset: string
+          pain_description: string
+          past_medical_history: string | null
+          radiation: string | null
+          smoking_history: string | null
+          submitted_at: string
+          triggers: string | null
+        }
+        Insert: {
+          age: number
+          ai_advice?: string | null
+          ai_reasoning?: string | null
+          ai_risk_level?: string | null
+          ai_summary?: string | null
+          associated_symptoms?: string | null
+          duration: string
+          family_history?: string | null
+          id?: string
+          improves_with_rest: string
+          medications?: string | null
+          onset: string
+          pain_description: string
+          past_medical_history?: string | null
+          radiation?: string | null
+          smoking_history?: string | null
+          submitted_at?: string
+          triggers?: string | null
+        }
+        Update: {
+          age?: number
+          ai_advice?: string | null
+          ai_reasoning?: string | null
+          ai_risk_level?: string | null
+          ai_summary?: string | null
+          associated_symptoms?: string | null
+          duration?: string
+          family_history?: string | null
+          id?: string
+          improves_with_rest?: string
+          medications?: string | null
+          onset?: string
+          pain_description?: string
+          past_medical_history?: string | null
+          radiation?: string | null
+          smoking_history?: string | null
+          submitted_at?: string
+          triggers?: string | null
+        }
+        Relationships: []
+      }
       clinical_notes: {
         Row: {
           ai_key_points: string | null
