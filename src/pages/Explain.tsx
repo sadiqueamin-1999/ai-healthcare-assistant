@@ -178,4 +178,71 @@ function ResultCard({
   );
 }
 
+
+function ReadingGradeCard({
+  originalText,
+  simplifiedText,
+}: {
+  originalText: string;
+  simplifiedText: string | null;
+}) {
+  const originalGrade = useMemo(() => fleschKincaidGrade(originalText), [originalText]);
+  const simplifiedGrade = useMemo(
+    () => (simplifiedText ? fleschKincaidGrade(simplifiedText) : null),
+    [simplifiedText]
+  );
+
+  const improvement = simplifiedGrade !== null ? originalGrade - simplifiedGrade : null;
+
+  return (
+    <Card className="border-primary/20 bg-primary/5">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <span className="text-primary"><GraduationCap className="h-4 w-4" /></span>
+          Reading Grade Comparison
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center gap-4">
+          <GradeBadge label="Original Letter" grade={originalGrade} variant="muted" />
+          {simplifiedGrade !== null && (
+            <>
+              <div className="flex flex-col items-center gap-1">
+                <ArrowDown className="h-4 w-4 text-success" />
+                {improvement !== null && improvement > 0 && (
+                  <span className="text-xs font-medium text-success">
+                    −{improvement.toFixed(1)} grades
+                  </span>
+                )}
+              </div>
+              <GradeBadge label="AI Explanation" grade={simplifiedGrade} variant="success" />
+            </>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function GradeBadge({
+  label,
+  grade,
+  variant,
+}: {
+  label: string;
+  grade: number;
+  variant: "muted" | "success";
+}) {
+  const bgClass = variant === "success" ? "bg-success/10" : "bg-muted";
+  const textClass = variant === "success" ? "text-success" : "text-muted-foreground";
+
+  return (
+    <div className={`flex-1 rounded-lg ${bgClass} p-3 text-center`}>
+      <p className="text-xs font-medium text-muted-foreground mb-1">{label}</p>
+      <p className={`text-2xl font-bold ${textClass}`}>{grade.toFixed(1)}</p>
+      <p className="text-xs text-muted-foreground mt-0.5">{gradeLabel(grade)}</p>
+    </div>
+  );
+}
+
 export default Explain;
