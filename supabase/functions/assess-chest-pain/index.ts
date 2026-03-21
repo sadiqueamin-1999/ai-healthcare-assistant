@@ -117,12 +117,19 @@ H. FAMILY HISTORY:
    • Yes: +2
    • No: 0
 
-I. SEX MODIFIER:
-   • Female or Intersex with atypical symptoms (e.g. fatigue, nausea, jaw/back pain without classic crushing chest pain): +2
-   • Male with classical cardiac symptoms (pressure/squeezing + radiation + SOB): +1
-   • Otherwise: 0
+I. AGE:
+   • Age < 20: +0
+   • Age 20–39: +1
+   • Age 40–49: +2
+   • Age 50–59: +3
+   • Age ≥ 60: +4
 
-J. IMPROVES WITH REST:
+J. SEX MODIFIER:
+   • Male with classical cardiac symptoms (pressure/squeezing + radiation + SOB): +1
+   • Female with ANY atypical symptoms (nausea, dizziness, indigestion-like, fatigue, breathlessness without classic crushing chest pain): +2
+   • Intersex / Prefer not to say: 0
+
+K. IMPROVES WITH REST:
    • No (does NOT improve): +2
    • Yes: 0
 
@@ -145,7 +152,7 @@ You MUST return a structured response with these fields:
 2. riskCategory — One of: "Very Low", "Low", "Medium", "High", "Very High"
 3. aiSummary — A concise clinical summary of the presentation.
 4. aiReasoning — MUST show the full score breakdown:
-   - List each category (A through J) with what was found and points awarded
+   - List each category (A through K) with what was found and points awarded
    - Show the running total
    - Explain the final classification
    - Reference specific symptoms and risk factors
@@ -231,7 +238,7 @@ serve(async (req) => {
                   },
                   aiReasoning: {
                     type: "string",
-                    description: "Full score breakdown by category (A-J) with points awarded and final classification explanation.",
+                    description: "Full score breakdown by category (A-K) with points awarded and final classification explanation.",
                   },
                   aiAdvice: {
                     type: "string",
