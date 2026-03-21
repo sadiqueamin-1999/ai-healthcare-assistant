@@ -94,7 +94,9 @@ D. DURATION:
 
 E. TRIGGERS (add points for each reported):
    • No clear trigger (pain occurs at rest): +5
-   • Exercise or exertion: +4
+   • Exercise or exertion: +4 (cardiac trigger — do NOT zero this unless musculoskeletal override applies)
+   • Movement or twisting: +0 to +1 (musculoskeletal trigger — contributes to musculoskeletal override pattern)
+   • Pressing on the chest wall: +0 (musculoskeletal trigger — contributes to musculoskeletal override pattern)
    • Stress or anxiety: +1
    • Eating: +1
    • Deep breathing: +1

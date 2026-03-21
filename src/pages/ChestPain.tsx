@@ -46,6 +46,8 @@ const ONSET_OPTIONS = ["Sudden", "Gradual"];
 
 const TRIGGER_OPTIONS = [
   "Exercise or exertion",
+  "Movement or twisting",
+  "Pressing on the chest wall",
   "Stress or anxiety",
   "Eating",
   "Deep breathing",
