@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ExpandExplanation from "@/components/ExpandExplanation";
+import { fleschKincaidGrade, gradeLabel } from "@/lib/readability";
 import { toast } from "sonner";
-import { Mail, Brain, Footprints, AlertTriangle, BookOpen, Loader2 } from "lucide-react";
+import { Mail, Brain, Footprints, AlertTriangle, BookOpen, Loader2, GraduationCap, ArrowDown } from "lucide-react";
 
 interface LetterResult {
   id: string;
@@ -105,6 +106,10 @@ const Explain = () => {
 
         {result && (
           <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
+            <ReadingGradeCard
+              originalText={result.letter_text}
+              simplifiedText={result.ai_plain_english}
+            />
             <ResultCard
               icon={<BookOpen className="h-4 w-4" />}
               title="Plain English Version"
@@ -170,6 +175,73 @@ function ResultCard({
         </p>
       </CardContent>
     </Card>
+  );
+}
+
+
+function ReadingGradeCard({
+  originalText,
+  simplifiedText,
+}: {
+  originalText: string;
+  simplifiedText: string | null;
+}) {
+  const originalGrade = useMemo(() => fleschKincaidGrade(originalText), [originalText]);
+  const simplifiedGrade = useMemo(
+    () => (simplifiedText ? fleschKincaidGrade(simplifiedText) : null),
+    [simplifiedText]
+  );
+
+  const improvement = simplifiedGrade !== null ? originalGrade - simplifiedGrade : null;
+
+  return (
+    <Card className="border-primary/20 bg-primary/5">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <span className="text-primary"><GraduationCap className="h-4 w-4" /></span>
+          Reading Grade Comparison
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center gap-4">
+          <GradeBadge label="Original Letter" grade={originalGrade} variant="muted" />
+          {simplifiedGrade !== null && (
+            <>
+              <div className="flex flex-col items-center gap-1">
+                <ArrowDown className="h-4 w-4 text-success" />
+                {improvement !== null && improvement > 0 && (
+                  <span className="text-xs font-medium text-success">
+                    −{improvement.toFixed(1)} grades
+                  </span>
+                )}
+              </div>
+              <GradeBadge label="AI Explanation" grade={simplifiedGrade} variant="success" />
+            </>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function GradeBadge({
+  label,
+  grade,
+  variant,
+}: {
+  label: string;
+  grade: number;
+  variant: "muted" | "success";
+}) {
+  const bgClass = variant === "success" ? "bg-success/10" : "bg-muted";
+  const textClass = variant === "success" ? "text-success" : "text-muted-foreground";
+
+  return (
+    <div className={`flex-1 rounded-lg ${bgClass} p-3 text-center`}>
+      <p className="text-xs font-medium text-muted-foreground mb-1">{label}</p>
+      <p className={`text-2xl font-bold ${textClass}`}>{grade.toFixed(1)}</p>
+      <p className="text-xs text-muted-foreground mt-0.5">{gradeLabel(grade)}</p>
+    </div>
   );
 }
 
