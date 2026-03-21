@@ -200,7 +200,7 @@ Given a patient message, produce:
         ai_risk_level: triageResult.aiRiskLevel,
         ai_draft_reply: triageResult.aiDraftReply,
         ai_reasoning: triageResult.aiReasoning,
-        safety_flag: triageResult.aiRiskLevel === "High",
+        safety_flag: triageResult.aiRiskLevel === "High Risk",
       })
       .select()
       .single();
@@ -212,7 +212,6 @@ Given a patient message, produce:
 
     return new Response(JSON.stringify({
       ...data,
-      ai_alternative_interpretations: triageResult.aiAlternativeInterpretations,
       ai_clarifying_questions: triageResult.aiClarifyingQuestions,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
