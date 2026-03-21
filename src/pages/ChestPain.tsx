@@ -86,9 +86,16 @@ interface AssessmentResult {
   ai_summary: string | null;
   ai_reasoning: string | null;
   ai_advice: string | null;
+  ai_score: number | null;
 }
 
 const riskConfig: Record<string, { bg: string; text: string; border: string; icon: React.ReactNode }> = {
+  "Very High": {
+    bg: "bg-destructive/10",
+    text: "text-destructive",
+    border: "border-destructive/30",
+    icon: <ShieldAlert className="h-4 w-4" />,
+  },
   High: {
     bg: "bg-destructive/10",
     text: "text-destructive",
@@ -101,13 +108,13 @@ const riskConfig: Record<string, { bg: string; text: string; border: string; ico
     border: "border-warning/30",
     icon: <AlertTriangle className="h-4 w-4" />,
   },
-  "Uncertain – Needs Clarification": {
-    bg: "bg-accent/10",
-    text: "text-accent-foreground",
-    border: "border-accent/30",
-    icon: <AlertTriangle className="h-4 w-4" />,
+  Low: {
+    bg: "bg-success/10",
+    text: "text-success",
+    border: "border-success/30",
+    icon: <HeartPulse className="h-4 w-4" />,
   },
-  "Low — but with safety advice": {
+  "Very Low": {
     bg: "bg-success/10",
     text: "text-success",
     border: "border-success/30",
