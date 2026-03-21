@@ -474,12 +474,18 @@ const ChestPain = () => {
         {result && (
           <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
             <Card className={`shadow-sm ${style.border} ${style.bg}`}>
-              <CardContent className="pt-6 pb-5 flex items-start gap-3">
+              <CardContent className="pt-6 pb-5 flex items-start gap-4">
                 <span className={`mt-0.5 ${style.text}`}>{style.icon}</span>
-                <div className="space-y-1">
+                <div className="flex items-center gap-3 flex-wrap">
                   <span className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold ${style.bg} ${style.text} ring-1 ring-inset ${style.border}`}>
                     {risk}
                   </span>
+                  {result.ai_score != null && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold bg-muted text-foreground ring-1 ring-inset ring-border">
+                      <Activity className="h-3.5 w-3.5" />
+                      Score: {result.ai_score}
+                    </span>
+                  )}
                 </div>
               </CardContent>
             </Card>
