@@ -165,6 +165,7 @@ LOW — Assign if the message is about:
         ai_risk_level: triageResult.aiRiskLevel,
         ai_draft_reply: triageResult.aiDraftReply,
         ai_reasoning: triageResult.aiReasoning,
+        safety_flag: triageResult.aiRiskLevel === "High",
       })
       .select()
       .single();
