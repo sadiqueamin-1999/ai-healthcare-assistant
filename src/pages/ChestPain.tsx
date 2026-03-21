@@ -86,9 +86,16 @@ interface AssessmentResult {
   ai_summary: string | null;
   ai_reasoning: string | null;
   ai_advice: string | null;
+  ai_score: number | null;
 }
 
 const riskConfig: Record<string, { bg: string; text: string; border: string; icon: React.ReactNode }> = {
+  "Very High": {
+    bg: "bg-destructive/10",
+    text: "text-destructive",
+    border: "border-destructive/30",
+    icon: <ShieldAlert className="h-4 w-4" />,
+  },
   High: {
     bg: "bg-destructive/10",
     text: "text-destructive",
@@ -101,13 +108,13 @@ const riskConfig: Record<string, { bg: string; text: string; border: string; ico
     border: "border-warning/30",
     icon: <AlertTriangle className="h-4 w-4" />,
   },
-  "Uncertain – Needs Clarification": {
-    bg: "bg-accent/10",
-    text: "text-accent-foreground",
-    border: "border-accent/30",
-    icon: <AlertTriangle className="h-4 w-4" />,
+  Low: {
+    bg: "bg-success/10",
+    text: "text-success",
+    border: "border-success/30",
+    icon: <HeartPulse className="h-4 w-4" />,
   },
-  "Low — but with safety advice": {
+  "Very Low": {
     bg: "bg-success/10",
     text: "text-success",
     border: "border-success/30",
@@ -467,12 +474,18 @@ const ChestPain = () => {
         {result && (
           <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
             <Card className={`shadow-sm ${style.border} ${style.bg}`}>
-              <CardContent className="pt-6 pb-5 flex items-start gap-3">
+              <CardContent className="pt-6 pb-5 flex items-start gap-4">
                 <span className={`mt-0.5 ${style.text}`}>{style.icon}</span>
-                <div className="space-y-1">
+                <div className="flex items-center gap-3 flex-wrap">
                   <span className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold ${style.bg} ${style.text} ring-1 ring-inset ${style.border}`}>
                     {risk}
                   </span>
+                  {result.ai_score != null && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold bg-muted text-foreground ring-1 ring-inset ring-border">
+                      <Activity className="h-3.5 w-3.5" />
+                      Score: {result.ai_score}
+                    </span>
+                  )}
                 </div>
               </CardContent>
             </Card>
