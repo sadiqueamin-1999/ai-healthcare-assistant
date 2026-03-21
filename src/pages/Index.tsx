@@ -5,6 +5,7 @@ import {
   ShieldAlert,
   FileText,
   BookOpen,
+  HeartPulse,
   Heart,
   Users,
   Zap,
@@ -33,6 +34,14 @@ const featureCards = [
       "Convert NHS letters and test results into clear, plain-English patient explanations.",
     icon: BookOpen,
     to: "/explain",
+    delay: "animate-fade-in-delay-3",
+  },
+  {
+    title: "Chest Pain Assessment",
+    description:
+      "A structured, safe triage tool for evaluating chest pain using NHS-aligned safety rules.",
+    icon: HeartPulse,
+    to: "/chestpain",
     delay: "animate-fade-in-delay-3",
   },
 ];
@@ -90,7 +99,7 @@ const Index = () => {
               AI Healthcare Assistant
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
-              Three powerful AI tools to support clinicians and improve patient
+              Four powerful AI tools to support clinicians and improve patient
               communication.
             </p>
           </div>
@@ -120,7 +129,7 @@ const Index = () => {
 
       {/* Feature Cards */}
       <section className="mx-auto max-w-5xl px-4 pb-20">
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {featureCards.map((card) => (
             <Link key={card.to} to={card.to} className="group">
               <Card
