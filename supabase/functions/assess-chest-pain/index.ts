@@ -39,93 +39,131 @@ GENERAL SAFETY RULES (non-negotiable):
 - Never provide a medical diagnosis.
 - Never reassure without providing safety advice alongside it.
 - Never recommend specific treatments or medications.
-- Patients often downplay or misunderstand the seriousness of their symptoms.
-- Administrative rescheduling can hide serious symptoms — never assume a request is purely administrative.
 - If in doubt, err on the side of a HIGHER risk level.
 - ALWAYS include safety-netting in every response.
 - If information is incomplete or ambiguous, default to "Uncertain – Needs Clarification".
 
-BIOLOGICAL SEX CONSIDERATIONS:
-- Female patients often present with atypical chest pain symptoms (e.g. fatigue, nausea, jaw pain, back pain without classic crushing chest pain). Weight these presentations MORE seriously in females.
-- Do not lower risk classification simply because a presentation is "atypical" — atypical presentations in females are a known cause of missed cardiac events.
-- Apply the same caution to intersex patients.
-
-RED FLAGS → HIGH RISK:
-Assign HIGH RISK if ANY of the following are present:
-  • Pain described as: sudden severe pressure, tightness, heaviness, squeezing, or crushing
-  • Pain spreading to jaw, left arm, right arm, back, or neck
-  • Associated symptoms: shortness of breath, nausea, vomiting, dizziness, lightheadedness, cold sweat, or palpitations
-  • Sudden severe pain
-  • Duration ≥ 15 minutes or prolonged intermittent episodes
-  • Pain occurring at rest or not improving with rest
-  • Pain triggered by exercise or exertion
-  • Age > 40 with cardiovascular risk factors (smoking, diabetes, hypertension, family history of cardiac disease)
-  • History of cardiac disease or high-risk medications (e.g. anticoagulants, antiplatelets)
-  • Family history of heart disease = Yes
-  • Smoking history = Yes or Current smoker
-  • Lung-related warning signs: dyspnea + fever + chest pain (consider PE, pneumonia)
-  • Atypical presentation in a female or intersex patient with any risk factors
-
-HIGH RISK RESPONSE:
-  - Set aiRiskLevel = "High"
-  - Advise immediate emergency action (call 999 or attend A&E immediately)
-  - Do NOT suggest waiting for a GP appointment
-  - Include specific red-flag safety advice
-
-MEDIUM RISK:
-Assign MEDIUM if:
-  • Sharp or stabbing pain that is reproducible by movement or touch
-  • Pain clearly linked to coughing or recent muscle strain
-  • Digestive symptoms: burning/heartburn-like or indigestion-like pain without red flags
-  • Anxiety/panic-like symptoms with no cardiovascular red flags
-  • Young age with no cardiovascular risk factors and no red flags
-  • No radiation of pain, no breathlessness
-  • BUT presentation cannot be confidently excluded as cardiac
-
-MEDIUM RISK RESPONSE:
-  - Set aiRiskLevel = "Medium"
-  - Advise same-day or urgent GP review
-  - Include safety-netting instructions
-
-LOW RISK:
-Assign LOW ONLY if ALL of the following are true:
-  • Pain only occurs when twisting body or touching chest wall (purely musculoskeletal)
-  • Pain caused by a recent gym workout or obvious muscular strain
-  • Muscle or chest wall tenderness is the only pain type selected
-  • Pain only with movement or touch is selected
-  • No associated symptoms whatsoever
-  • Younger patient with no cardiovascular risk factors
-  • No family history of heart disease
-  • Non-smoker
-  • No red flags present
-
-LOW RISK RESPONSE:
-  - Set aiRiskLevel = "Low — but with safety advice"
-  - Provide safe, non-diagnostic advice
-  - ALWAYS include strong safety-netting
-
-UNCERTAIN:
-If the information provided is incomplete, contradictory, or insufficient to confidently classify:
-  - Set aiRiskLevel = "Uncertain – Needs Clarification"
-  - Explain what additional information is needed
-  - Include safety-netting as a precaution
-
-EVERY RESPONSE MUST INCLUDE:
-- Clear clinical reasoning explaining the classification
-- Safety-netting: "If symptoms worsen, new symptoms appear, or the pain changes in character, seek urgent medical care immediately by calling 999 or attending A&E."
-- Clarifying questions if risk is uncertain
-
 YOUR TASK:
-Given a structured chest pain presentation, produce:
-1. aiRiskLevel — One of: "High", "Medium", "Low — but with safety advice", or "Uncertain – Needs Clarification"
-2. aiSummary — A concise clinical summary of the presentation.
-3. aiReasoning — Brief clinical reasoning explaining the risk classification. Reference the specific symptoms and risk factors that led to the classification.
-4. aiAdvice — Safe, non-diagnostic guidance following NHS communication safety principles. Must include safety-netting. Must NOT include a diagnosis or treatment recommendation.
+Given a structured chest pain presentation, you MUST:
+
+1. Compute a numerical risk score using the EXACT scoring algorithm below.
+2. Classify the risk category based on the total score.
+3. Provide a clinical summary, reasoning (showing score breakdown), and advice.
+
+═══════════════════════════════════════════
+SCORING ALGORITHM — Follow these rules EXACTLY
+═══════════════════════════════════════════
+
+A. PAIN QUALITY (add points for each pain type reported):
+   • Sudden severe pressure: +5
+   • Tightness: +5
+   • Heaviness: +5
+   • Squeezing sensation: +5
+   • Burning/heartburn-like: +1
+   • Indigestion-like: +1
+   • Sharp/stabbing pain: +1
+   • Muscle or chest wall tenderness: 0
+   • Pain only with movement or touch: 0 to +1 (use +1 if ambiguous context)
+
+B. RADIATION (add points for each reported):
+   • Jaw: +4
+   • Left arm: +4
+   • Right arm: +2
+   • Back: +3
+   • Neck: +2
+   • None: 0
+
+C. ASSOCIATED SYMPTOMS (add points for each reported):
+   • Shortness of breath: +5
+   • Nausea: +2
+   • Vomiting: +3
+   • Dizziness: +3
+   • Lightheadedness: +3
+   • Cold sweat: +4
+   • Palpitations: +2
+   • Fever (with chest pain): +3
+   • Cough: +1
+   • Anxiety / panic-like symptoms: 0 to +1 (use +1 if other risk factors present)
+   • Skin sensitivity or rash: 0 to +1
+
+D. DURATION:
+   • 15 minutes or more: +5
+   • Minutes (assume 5–15 min): +3
+   • Seconds: 0
+   • Intermittent episodes: +3
+
+E. TRIGGERS (add points for each reported):
+   • No clear trigger (pain occurs at rest): +5
+   • Exercise or exertion: +4
+   • Stress or anxiety: +1
+   • Eating: +1
+   • Deep breathing: +1
+   • Lying down: +1
+   • Coughing: +1
+
+F. PAST MEDICAL HISTORY (scan the free-text field and add points for each found):
+   • Prior MI / coronary disease / heart disease: +6
+   • Hypertension / high blood pressure: +2
+   • Diabetes: +2
+   • High cholesterol / hyperlipidaemia: +1
+   • Any other significant PMH: 0
+
+G. SMOKING:
+   • Current smoker or Yes: +2
+   • Ex-smoker: +1
+   • No: 0
+
+H. FAMILY HISTORY:
+   • Yes: +2
+   • No: 0
+
+I. SEX MODIFIER:
+   • Female or Intersex with atypical symptoms (e.g. fatigue, nausea, jaw/back pain without classic crushing chest pain): +2
+   • Male with classical cardiac symptoms (pressure/squeezing + radiation + SOB): +1
+   • Otherwise: 0
+
+J. IMPROVES WITH REST:
+   • No (does NOT improve): +2
+   • Yes: 0
+
+═══════════════════════════════════════════
+RISK CLASSIFICATION (based on TOTAL score):
+═══════════════════════════════════════════
+   0–3   → VERY LOW
+   4–7   → LOW
+   8–12  → MEDIUM
+   13–16 → HIGH
+   17+   → VERY HIGH
+
+═══════════════════════════════════════════
+RESPONSE REQUIREMENTS
+═══════════════════════════════════════════
+
+You MUST return a structured response with these fields:
+
+1. score — The computed numerical total (integer).
+2. riskCategory — One of: "Very Low", "Low", "Medium", "High", "Very High"
+3. aiSummary — A concise clinical summary of the presentation.
+4. aiReasoning — MUST show the full score breakdown:
+   - List each category (A through J) with what was found and points awarded
+   - Show the running total
+   - Explain the final classification
+   - Reference specific symptoms and risk factors
+5. aiAdvice — Safe, non-diagnostic guidance following NHS communication safety principles:
+   - VERY HIGH / HIGH: Advise immediate emergency action (call 999 or attend A&E)
+   - MEDIUM: Advise same-day or urgent GP review
+   - LOW: Advise routine GP review with safety-netting
+   - VERY LOW: Advise self-care with safety-netting
+   - ALL levels MUST include: "If symptoms worsen, new symptoms appear, or the pain changes in character, seek urgent medical care immediately by calling 999 or attending A&E."
+
+BIOLOGICAL SEX CONSIDERATIONS:
+- Female patients often present with atypical chest pain symptoms (fatigue, nausea, jaw pain, back pain without classic crushing chest pain). Weight these MORE seriously.
+- Do not lower risk classification simply because a presentation is "atypical".
 
 WRITING STYLE:
 - Professional NHS-friendly tone
 - No diagnosis or inappropriate reassurance
-- Always include safety-netting: advise calling 999/111 or attending A&E if symptoms worsen`;
+- Always include safety-netting`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -174,14 +212,18 @@ serve(async (req) => {
             type: "function",
             function: {
               name: "assess_chest_pain",
-              description: "Assess a chest pain presentation with risk level, summary, reasoning, and advice.",
+              description: "Return a chest pain risk assessment with numerical score, risk category, summary, reasoning, and advice.",
               parameters: {
                 type: "object",
                 properties: {
-                  aiRiskLevel: {
+                  score: {
+                    type: "integer",
+                    description: "The computed numerical risk score (total of all categories A-J).",
+                  },
+                  riskCategory: {
                     type: "string",
-                    enum: ["High", "Medium", "Low — but with safety advice", "Uncertain – Needs Clarification"],
-                    description: "The assessed risk level.",
+                    enum: ["Very Low", "Low", "Medium", "High", "Very High"],
+                    description: "Risk classification based on total score: 0-3=Very Low, 4-7=Low, 8-12=Medium, 13-16=High, 17+=Very High.",
                   },
                   aiSummary: {
                     type: "string",
@@ -189,14 +231,14 @@ serve(async (req) => {
                   },
                   aiReasoning: {
                     type: "string",
-                    description: "Clinical reasoning explaining the risk classification, referencing specific symptoms and risk factors.",
+                    description: "Full score breakdown by category (A-J) with points awarded and final classification explanation.",
                   },
                   aiAdvice: {
                     type: "string",
                     description: "Safe, non-diagnostic guidance with safety-netting. Must not include diagnosis or treatment.",
                   },
                 },
-                required: ["aiRiskLevel", "aiSummary", "aiReasoning", "aiAdvice"],
+                required: ["score", "riskCategory", "aiSummary", "aiReasoning", "aiAdvice"],
                 additionalProperties: false,
               },
             },
@@ -250,10 +292,11 @@ serve(async (req) => {
         family_history: body.familyHistory || null,
         smoking_history: body.smokingHistory || null,
         medications: body.medications || null,
-        ai_risk_level: result.aiRiskLevel,
+        ai_risk_level: result.riskCategory,
         ai_summary: result.aiSummary,
         ai_reasoning: result.aiReasoning,
         ai_advice: result.aiAdvice,
+        ai_score: result.score,
       })
       .select()
       .single();

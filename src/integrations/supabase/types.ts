@@ -20,6 +20,7 @@ export type Database = {
           ai_advice: string | null
           ai_reasoning: string | null
           ai_risk_level: string | null
+          ai_score: number | null
           ai_summary: string | null
           associated_symptoms: string | null
           duration: string
@@ -40,6 +41,7 @@ export type Database = {
           ai_advice?: string | null
           ai_reasoning?: string | null
           ai_risk_level?: string | null
+          ai_score?: number | null
           ai_summary?: string | null
           associated_symptoms?: string | null
           duration: string
@@ -60,6 +62,7 @@ export type Database = {
           ai_advice?: string | null
           ai_reasoning?: string | null
           ai_risk_level?: string | null
+          ai_score?: number | null
           ai_summary?: string | null
           associated_symptoms?: string | null
           duration?: string

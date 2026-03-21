@@ -1,0 +1,1 @@
+ALTER TABLE public.chest_pain_assessments ADD COLUMN IF NOT EXISTS ai_score integer;
