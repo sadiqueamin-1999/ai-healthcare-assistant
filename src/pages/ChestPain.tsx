@@ -55,6 +55,7 @@ const TRIGGER_OPTIONS = [
 ];
 
 const ASSOCIATED_SYMPTOMS = [
+  "None",
   "Shortness of breath",
   "Nausea",
   "Vomiting",
