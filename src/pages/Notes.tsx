@@ -120,11 +120,10 @@ const Notes = () => {
               title="Timeline"
               content={result.ai_timeline}
             />
-            <ResultCard
-              icon={<Brain className="h-4 w-4" />}
-              title="Reasoning"
-              content={result.ai_reasoning}
-              muted
+            <ExpandExplanation
+              reasoning={result.ai_reasoning}
+              alternativeInterpretations={result.ai_alternative_interpretations}
+              clarifyingQuestions={result.ai_clarifying_questions}
             />
           </div>
         )}

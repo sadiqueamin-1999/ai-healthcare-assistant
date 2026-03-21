@@ -132,11 +132,10 @@ const Triage = () => {
               title="Draft Reply"
               content={result.ai_draft_reply}
             />
-            <ResultCard
-              icon={<Brain className="h-4 w-4" />}
-              title="Reasoning"
-              content={result.ai_reasoning}
-              muted
+            <ExpandExplanation
+              reasoning={result.ai_reasoning}
+              alternativeInterpretations={result.ai_alternative_interpretations}
+              clarifyingQuestions={result.ai_clarifying_questions}
             />
           </div>
         )}
