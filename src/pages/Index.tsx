@@ -99,7 +99,7 @@ const Index = () => {
               AI Healthcare Assistant
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
-              Three powerful AI tools to support clinicians and improve patient
+              Four powerful AI tools to support clinicians and improve patient
               communication.
             </p>
           </div>
