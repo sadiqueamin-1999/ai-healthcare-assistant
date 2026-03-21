@@ -106,6 +106,10 @@ const Explain = () => {
 
         {result && (
           <div className="space-y-4 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
+            <ReadingGradeCard
+              originalText={result.letter_text}
+              simplifiedText={result.ai_plain_english}
+            />
             <ResultCard
               icon={<BookOpen className="h-4 w-4" />}
               title="Plain English Version"
