@@ -123,6 +123,12 @@ const Index = () => {
                 Explain Letters &amp; Results
               </Link>
             </Button>
+            <Button variant="hero-outline" size="lg" asChild>
+              <Link to="/chestpain">
+                <HeartPulse className="h-5 w-5" />
+                Chest Pain Assessment
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
