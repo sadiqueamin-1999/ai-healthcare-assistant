@@ -115,8 +115,16 @@ LOW — Assign if the message is about:
                     type: "string",
                     description: "Explanation of the risk assessment and response rationale.",
                   },
+                  aiAlternativeInterpretations: {
+                    type: "string",
+                    description: "Other possible interpretations of the patient's message that a clinician should consider.",
+                  },
+                  aiClarifyingQuestions: {
+                    type: "string",
+                    description: "2-3 questions the clinician could ask the patient to better understand their situation.",
+                  },
                 },
-                required: ["aiSummary", "aiRiskLevel", "aiDraftReply", "aiReasoning"],
+                required: ["aiSummary", "aiRiskLevel", "aiDraftReply", "aiReasoning", "aiAlternativeInterpretations", "aiClarifyingQuestions"],
                 additionalProperties: false,
               },
             },
@@ -175,7 +183,11 @@ LOW — Assign if the message is about:
       throw new Error("Failed to save triage result");
     }
 
-    return new Response(JSON.stringify(data), {
+    return new Response(JSON.stringify({
+      ...data,
+      ai_alternative_interpretations: triageResult.aiAlternativeInterpretations,
+      ai_clarifying_questions: triageResult.aiClarifyingQuestions,
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {

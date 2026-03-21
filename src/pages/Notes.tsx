@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ExpandExplanation from "@/components/ExpandExplanation";
 import { toast } from "sonner";
 import { FileText, Brain, List, Clock, MessageSquare, Loader2 } from "lucide-react";
 
@@ -14,6 +15,8 @@ interface NoteResult {
   ai_key_points: string | null;
   ai_timeline: string | null;
   ai_reasoning: string | null;
+  ai_alternative_interpretations: string | null;
+  ai_clarifying_questions: string | null;
 }
 
 const Notes = () => {
@@ -119,11 +122,10 @@ const Notes = () => {
               title="Timeline"
               content={result.ai_timeline}
             />
-            <ResultCard
-              icon={<Brain className="h-4 w-4" />}
-              title="Reasoning"
-              content={result.ai_reasoning}
-              muted
+            <ExpandExplanation
+              reasoning={result.ai_reasoning}
+              alternativeInterpretations={result.ai_alternative_interpretations}
+              clarifyingQuestions={result.ai_clarifying_questions}
             />
           </div>
         )}

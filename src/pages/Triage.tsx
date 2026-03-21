@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ExpandExplanation from "@/components/ExpandExplanation";
 import { toast } from "sonner";
 import { ShieldAlert, Brain, MessageSquare, Reply, Loader2 } from "lucide-react";
 
@@ -14,6 +15,8 @@ interface TriageResult {
   ai_risk_level: string | null;
   ai_draft_reply: string | null;
   ai_reasoning: string | null;
+  ai_alternative_interpretations: string | null;
+  ai_clarifying_questions: string | null;
 }
 
 const riskStyles: Record<string, { bg: string; text: string; border: string }> = {
@@ -131,11 +134,10 @@ const Triage = () => {
               title="Draft Reply"
               content={result.ai_draft_reply}
             />
-            <ResultCard
-              icon={<Brain className="h-4 w-4" />}
-              title="Reasoning"
-              content={result.ai_reasoning}
-              muted
+            <ExpandExplanation
+              reasoning={result.ai_reasoning}
+              alternativeInterpretations={result.ai_alternative_interpretations}
+              clarifyingQuestions={result.ai_clarifying_questions}
             />
           </div>
         )}

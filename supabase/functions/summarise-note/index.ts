@@ -100,8 +100,16 @@ FORMATTING:
                     type: "string",
                     description: "Reasoning behind the summary and extraction.",
                   },
+                  aiAlternativeInterpretations: {
+                    type: "string",
+                    description: "Other possible clinical interpretations or differential considerations based on the note content.",
+                  },
+                  aiClarifyingQuestions: {
+                    type: "string",
+                    description: "2-3 questions a clinician might want to clarify based on gaps or ambiguities in the note.",
+                  },
                 },
-                required: ["aiSummary", "aiKeyPoints", "aiTimeline", "aiReasoning"],
+                required: ["aiSummary", "aiKeyPoints", "aiTimeline", "aiReasoning", "aiAlternativeInterpretations", "aiClarifyingQuestions"],
                 additionalProperties: false,
               },
             },
@@ -156,7 +164,11 @@ FORMATTING:
       throw new Error("Failed to save summarised note");
     }
 
-    return new Response(JSON.stringify(data), {
+    return new Response(JSON.stringify({
+      ...data,
+      ai_alternative_interpretations: result.aiAlternativeInterpretations,
+      ai_clarifying_questions: result.aiClarifyingQuestions,
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
