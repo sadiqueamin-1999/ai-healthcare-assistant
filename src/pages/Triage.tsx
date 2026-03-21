@@ -135,7 +135,6 @@ const Triage = () => {
             />
             <ExpandExplanation
               reasoning={result.ai_reasoning}
-              alternativeInterpretations={result.ai_alternative_interpretations}
               clarifyingQuestions={result.ai_clarifying_questions}
             />
           </div>
