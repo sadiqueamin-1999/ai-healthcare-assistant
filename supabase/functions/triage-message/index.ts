@@ -115,8 +115,16 @@ LOW — Assign if the message is about:
                     type: "string",
                     description: "Explanation of the risk assessment and response rationale.",
                   },
+                  aiAlternativeInterpretations: {
+                    type: "string",
+                    description: "Other possible interpretations of the patient's message that a clinician should consider.",
+                  },
+                  aiClarifyingQuestions: {
+                    type: "string",
+                    description: "2-3 questions the clinician could ask the patient to better understand their situation.",
+                  },
                 },
-                required: ["aiSummary", "aiRiskLevel", "aiDraftReply", "aiReasoning"],
+                required: ["aiSummary", "aiRiskLevel", "aiDraftReply", "aiReasoning", "aiAlternativeInterpretations", "aiClarifyingQuestions"],
                 additionalProperties: false,
               },
             },

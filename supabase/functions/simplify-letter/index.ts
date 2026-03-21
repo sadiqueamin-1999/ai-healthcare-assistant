@@ -107,8 +107,16 @@ TONE & STYLE:
                     type: "string",
                     description: "Explanation of simplification choices and any ambiguities.",
                   },
+                  aiAlternativeInterpretations: {
+                    type: "string",
+                    description: "Other ways the letter content could be interpreted, or things the patient might misunderstand.",
+                  },
+                  aiClarifyingQuestions: {
+                    type: "string",
+                    description: "2-3 questions the patient or clinician might want to ask to clarify the letter's content.",
+                  },
                 },
-                required: ["aiPlainEnglish", "aiNextSteps", "aiImportantWarnings", "aiReasoning"],
+                required: ["aiPlainEnglish", "aiNextSteps", "aiImportantWarnings", "aiReasoning", "aiAlternativeInterpretations", "aiClarifyingQuestions"],
                 additionalProperties: false,
               },
             },
