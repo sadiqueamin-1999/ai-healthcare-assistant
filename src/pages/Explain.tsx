@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ExpandExplanation from "@/components/ExpandExplanation";
 import { toast } from "sonner";
 import { Mail, Brain, Footprints, AlertTriangle, BookOpen, Loader2 } from "lucide-react";
 
