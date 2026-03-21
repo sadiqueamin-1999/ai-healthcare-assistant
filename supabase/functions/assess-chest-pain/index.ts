@@ -152,7 +152,7 @@ You MUST return a structured response with these fields:
 2. riskCategory — One of: "Very Low", "Low", "Medium", "High", "Very High"
 3. aiSummary — A concise clinical summary of the presentation.
 4. aiReasoning — MUST show the full score breakdown:
-   - List each category (A through J) with what was found and points awarded
+   - List each category (A through K) with what was found and points awarded
    - Show the running total
    - Explain the final classification
    - Reference specific symptoms and risk factors
