@@ -15,6 +15,8 @@ interface LetterResult {
   ai_next_steps: string | null;
   ai_important_warnings: string | null;
   ai_reasoning: string | null;
+  ai_alternative_interpretations: string | null;
+  ai_clarifying_questions: string | null;
 }
 
 const Explain = () => {

@@ -164,7 +164,11 @@ FORMATTING:
       throw new Error("Failed to save summarised note");
     }
 
-    return new Response(JSON.stringify(data), {
+    return new Response(JSON.stringify({
+      ...data,
+      ai_alternative_interpretations: result.aiAlternativeInterpretations,
+      ai_clarifying_questions: result.aiClarifyingQuestions,
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {

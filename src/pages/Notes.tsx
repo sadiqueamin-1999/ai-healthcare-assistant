@@ -15,6 +15,8 @@ interface NoteResult {
   ai_key_points: string | null;
   ai_timeline: string | null;
   ai_reasoning: string | null;
+  ai_alternative_interpretations: string | null;
+  ai_clarifying_questions: string | null;
 }
 
 const Notes = () => {

@@ -15,6 +15,8 @@ interface TriageResult {
   ai_risk_level: string | null;
   ai_draft_reply: string | null;
   ai_reasoning: string | null;
+  ai_alternative_interpretations: string | null;
+  ai_clarifying_questions: string | null;
 }
 
 const riskStyles: Record<string, { bg: string; text: string; border: string }> = {

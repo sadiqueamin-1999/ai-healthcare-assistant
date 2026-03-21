@@ -171,7 +171,11 @@ TONE & STYLE:
       throw new Error("Failed to save simplified letter");
     }
 
-    return new Response(JSON.stringify(data), {
+    return new Response(JSON.stringify({
+      ...data,
+      ai_alternative_interpretations: result.aiAlternativeInterpretations,
+      ai_clarifying_questions: result.aiClarifyingQuestions,
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
