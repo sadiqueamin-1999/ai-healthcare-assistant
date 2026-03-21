@@ -100,10 +100,21 @@ const Dashboard = () => {
                 <button
                   key={m.id}
                   onClick={() => setSelectedMessage(m)}
-                  className="w-full text-left rounded-lg border border-border bg-card p-4 hover:border-primary/40 hover:shadow-sm transition-all"
+                  className={`w-full text-left rounded-lg border p-4 hover:shadow-sm transition-all ${
+                    m.safety_flag
+                      ? "border-destructive/40 bg-destructive/5 hover:border-destructive/60"
+                      : "border-border bg-card hover:border-primary/40"
+                  }`}
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <p className="text-sm text-foreground">{preview(m.message_text)}</p>
+                    <div className="flex items-start gap-2">
+                      {m.safety_flag && (
+                        <span className="mt-0.5 shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-destructive">
+                          <ShieldAlert className="h-3 w-3 text-destructive-foreground" />
+                        </span>
+                      )}
+                      <p className="text-sm text-foreground">{preview(m.message_text)}</p>
+                    </div>
                     {m.ai_risk_level && (
                       <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ${riskColor[m.ai_risk_level] ?? "bg-muted text-muted-foreground"}`}>
                         {m.ai_risk_level}
