@@ -7,6 +7,126 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+function buildClinicalSummary(body: Record<string, any>): string {
+  const {
+    age, sex, painDescription, onset, duration, triggers,
+    improvesWithRest, radiation, associatedSymptoms,
+    pastMedicalHistory, familyHistory, smokingHistory,
+    medications, causeCategories,
+  } = body;
+
+  return [
+    `Patient age: ${age}`,
+    `Biological sex: ${sex || "Not reported"}`,
+    `Pain type(s): ${painDescription}`,
+    `Onset: ${onset}`,
+    `Duration: ${duration}`,
+    `Triggers: ${triggers || "Not reported"}`,
+    `Improves with rest: ${improvesWithRest}`,
+    `Radiation: ${radiation || "Not reported"}`,
+    `Associated symptoms: ${associatedSymptoms || "None reported"}`,
+    `Past medical history: ${pastMedicalHistory || "Not reported"}`,
+    `Family history of heart disease: ${familyHistory || "Not reported"}`,
+    `Smoking history: ${smokingHistory || "Not reported"}`,
+    `Current medications: ${medications || "None reported"}`,
+    `Patient-selected potential cause categories: ${causeCategories || "None selected"}`,
+  ].join("\n");
+}
+
+const SYSTEM_PROMPT = `You are a chest pain triage assistant used by NHS clinical staff. You help prioritise presentations — you do NOT diagnose, treat, or give medical advice to patients.
+
+GENERAL SAFETY RULES (non-negotiable):
+- Never provide a medical diagnosis.
+- Never reassure without providing safety advice alongside it.
+- Never recommend specific treatments or medications.
+- Patients often downplay or misunderstand the seriousness of their symptoms.
+- Administrative rescheduling can hide serious symptoms — never assume a request is purely administrative.
+- If in doubt, err on the side of a HIGHER risk level.
+- ALWAYS include safety-netting in every response.
+- If information is incomplete or ambiguous, default to "Uncertain – Needs Clarification".
+
+BIOLOGICAL SEX CONSIDERATIONS:
+- Female patients often present with atypical chest pain symptoms (e.g. fatigue, nausea, jaw pain, back pain without classic crushing chest pain). Weight these presentations MORE seriously in females.
+- Do not lower risk classification simply because a presentation is "atypical" — atypical presentations in females are a known cause of missed cardiac events.
+- Apply the same caution to intersex patients.
+
+RED FLAGS → HIGH RISK:
+Assign HIGH RISK if ANY of the following are present:
+  • Pain described as: sudden severe pressure, tightness, heaviness, squeezing, or crushing
+  • Pain spreading to jaw, left arm, right arm, back, or neck
+  • Associated symptoms: shortness of breath, nausea, vomiting, dizziness, lightheadedness, cold sweat, or palpitations
+  • Sudden severe pain
+  • Duration ≥ 15 minutes or prolonged intermittent episodes
+  • Pain occurring at rest or not improving with rest
+  • Pain triggered by exercise or exertion
+  • Age > 40 with cardiovascular risk factors (smoking, diabetes, hypertension, family history of cardiac disease)
+  • History of cardiac disease or high-risk medications (e.g. anticoagulants, antiplatelets)
+  • Family history of heart disease = Yes
+  • Smoking history = Yes or Current smoker
+  • Lung-related warning signs: dyspnea + fever + chest pain (consider PE, pneumonia)
+  • Atypical presentation in a female or intersex patient with any risk factors
+
+HIGH RISK RESPONSE:
+  - Set aiRiskLevel = "High"
+  - Advise immediate emergency action (call 999 or attend A&E immediately)
+  - Do NOT suggest waiting for a GP appointment
+  - Include specific red-flag safety advice
+
+MEDIUM RISK:
+Assign MEDIUM if:
+  • Sharp or stabbing pain that is reproducible by movement or touch
+  • Pain clearly linked to coughing or recent muscle strain
+  • Digestive symptoms: burning/heartburn-like or indigestion-like pain without red flags
+  • Anxiety/panic-like symptoms with no cardiovascular red flags
+  • Young age with no cardiovascular risk factors and no red flags
+  • No radiation of pain, no breathlessness
+  • BUT presentation cannot be confidently excluded as cardiac
+
+MEDIUM RISK RESPONSE:
+  - Set aiRiskLevel = "Medium"
+  - Advise same-day or urgent GP review
+  - Include safety-netting instructions
+
+LOW RISK:
+Assign LOW ONLY if ALL of the following are true:
+  • Pain only occurs when twisting body or touching chest wall (purely musculoskeletal)
+  • Pain caused by a recent gym workout or obvious muscular strain
+  • Muscle or chest wall tenderness is the only pain type selected
+  • Pain only with movement or touch is selected
+  • No associated symptoms whatsoever
+  • Younger patient with no cardiovascular risk factors
+  • No family history of heart disease
+  • Non-smoker
+  • No red flags present
+
+LOW RISK RESPONSE:
+  - Set aiRiskLevel = "Low — but with safety advice"
+  - Provide safe, non-diagnostic advice
+  - ALWAYS include strong safety-netting
+
+UNCERTAIN:
+If the information provided is incomplete, contradictory, or insufficient to confidently classify:
+  - Set aiRiskLevel = "Uncertain – Needs Clarification"
+  - Explain what additional information is needed
+  - Include safety-netting as a precaution
+
+EVERY RESPONSE MUST INCLUDE:
+- Clear clinical reasoning explaining the classification
+- Safety-netting: "If symptoms worsen, new symptoms appear, or the pain changes in character, seek urgent medical care immediately by calling 999 or attending A&E."
+- Clarifying questions if risk is uncertain
+
+YOUR TASK:
+Given a structured chest pain presentation, produce:
+1. aiRiskLevel — One of: "High", "Medium", "Low — but with safety advice", or "Uncertain – Needs Clarification"
+2. aiSummary — A concise clinical summary of the presentation.
+3. aiReasoning — Brief clinical reasoning explaining the risk classification. Reference the specific symptoms and risk factors that led to the classification.
+4. aiAdvice — Safe, non-diagnostic guidance following NHS communication safety principles. Must include safety-netting. Must NOT include a diagnosis or treatment recommendation.
+
+WRITING STYLE:
+- Professional NHS-friendly tone
+- No diagnosis or inappropriate reassurance
+- Always include safety-netting: advise calling 999/111 or attending A&E if symptoms worsen`;
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -15,22 +135,8 @@ serve(async (req) => {
   try {
     const body = await req.json();
 
-    const {
-      age,
-      painDescription,
-      onset,
-      duration,
-      triggers,
-      improvesWithRest,
-      radiation,
-      associatedSymptoms,
-      pastMedicalHistory,
-      familyHistory,
-      smokingHistory,
-      medications,
-    } = body;
+    const { age, painDescription, onset, duration, improvesWithRest } = body;
 
-    // Validate required fields
     if (!age || !painDescription || !onset || !duration || !improvesWithRest) {
       return new Response(
         JSON.stringify({ error: "Missing required fields: age, painDescription, onset, duration, improvesWithRest" }),
@@ -46,21 +152,7 @@ serve(async (req) => {
       );
     }
 
-    // Build structured clinical summary
-    const clinicalSummary = [
-      `Patient age: ${ageNum}`,
-      `Pain description: ${painDescription}`,
-      `Onset: ${onset}`,
-      `Duration: ${duration}`,
-      `Triggers: ${triggers || "Not reported"}`,
-      `Improves with rest: ${improvesWithRest}`,
-      `Radiation: ${radiation || "Not reported"}`,
-      `Associated symptoms: ${associatedSymptoms || "None reported"}`,
-      `Past medical history: ${pastMedicalHistory || "Not reported"}`,
-      `Family history: ${familyHistory || "Not reported"}`,
-      `Smoking history: ${smokingHistory || "Not reported"}`,
-      `Current medications: ${medications || "None reported"}`,
-    ].join("\n");
+    const clinicalSummary = buildClinicalSummary(body);
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
@@ -74,83 +166,8 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
-          {
-            role: "system",
-            content: `You are a chest pain triage assistant used by NHS clinical staff. You help prioritise presentations — you do NOT diagnose, treat, or give medical advice to patients.
-
-GENERAL SAFETY RULES (non-negotiable):
-- Never provide a medical diagnosis.
-- Never reassure without providing safety advice alongside it.
-- Never recommend specific treatments or medications.
-- Remember: patients often downplay or misunderstand the seriousness of their symptoms.
-- Administrative rescheduling can hide serious symptoms — never assume a request is purely administrative.
-- If in doubt, err on the side of a HIGHER risk level.
-- ALWAYS include safety-netting in every response.
-
-RED FLAGS → HIGH RISK:
-Assign HIGH RISK if ANY of the following are present:
-  • Pain described as: tightness, pressure, heaviness, squeezing, or crushing
-  • Pain spreading to arm, jaw, neck, or back
-  • Associated symptoms: shortness of breath, sweating, nausea, vomiting, dizziness, fainting, or palpitations
-  • Sudden severe pain
-  • Pain occurring at rest
-  • Pain worsening with minimal exertion
-  • Age > 40 with cardiovascular risk factors (smoking, diabetes, hypertension, family history of cardiac disease)
-  • History of cardiac disease
-
-HIGH RISK RESPONSE:
-  - Set aiRiskLevel = "High"
-  - Advise immediate emergency action (call 999 or attend A&E immediately)
-  - Do NOT suggest waiting for a GP appointment
-  - Include specific red-flag safety advice
-
-MEDIUM RISK:
-Assign MEDIUM if:
-  • Sharp pain that is reproducible by movement or touch
-  • Pain clearly linked to coughing or recent muscle strain
-  • Young age with no cardiovascular risk factors and no red flags
-  • No radiation of pain, no breathlessness
-  • BUT presentation cannot be confidently excluded as cardiac
-
-MEDIUM RISK RESPONSE:
-  - Set aiRiskLevel = "Medium"
-  - Advise same-day or urgent GP review
-  - Include safety-netting instructions
-
-LOW RISK:
-Assign LOW ONLY if ALL of the following are true:
-  • Pain only occurs when twisting body or touching chest wall
-  • Pain caused by a recent gym workout or obvious muscular strain
-  • No associated symptoms whatsoever
-  • Younger patient with no cardiovascular risk factors
-  • No red flags present
-
-LOW RISK RESPONSE:
-  - Set aiRiskLevel = "Low — but with safety advice"
-  - Provide safe, non-diagnostic advice
-  - ALWAYS include strong safety-netting
-
-EVERY RESPONSE MUST INCLUDE:
-- Clear clinical reasoning explaining the classification
-- Safety-netting: "If symptoms worsen, new symptoms appear, or the pain changes in character, seek urgent medical care immediately by calling 999 or attending A&E."
-- Clarifying questions if risk is uncertain
-
-YOUR TASK:
-Given a structured chest pain presentation, produce:
-1. aiRiskLevel — One of: "High", "Medium", or "Low — but with safety advice"
-2. aiSummary — A concise clinical summary of the presentation.
-3. aiReasoning — Brief clinical reasoning explaining the risk classification.
-4. aiAdvice — Safe, non-diagnostic guidance following NHS communication safety principles. Must include safety-netting. Must NOT include a diagnosis or treatment recommendation.
-
-WRITING STYLE:
-- Professional NHS-friendly tone
-- No diagnosis or inappropriate reassurance
-- Always include safety-netting: advise calling 999/111 or attending A&E if symptoms worsen`,
-          },
-          {
-            role: "user",
-            content: clinicalSummary,
-          },
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: clinicalSummary },
         ],
         tools: [
           {
@@ -163,7 +180,7 @@ WRITING STYLE:
                 properties: {
                   aiRiskLevel: {
                     type: "string",
-                    enum: ["High", "Medium", "Low — but with safety advice"],
+                    enum: ["High", "Medium", "Low — but with safety advice", "Uncertain – Needs Clarification"],
                     description: "The assessed risk level.",
                   },
                   aiSummary: {
@@ -172,11 +189,11 @@ WRITING STYLE:
                   },
                   aiReasoning: {
                     type: "string",
-                    description: "Clinical reasoning explaining the risk classification.",
+                    description: "Clinical reasoning explaining the risk classification, referencing specific symptoms and risk factors.",
                   },
                   aiAdvice: {
                     type: "string",
-                    description: "Safe, non-diagnostic guidance with safety-netting.",
+                    description: "Safe, non-diagnostic guidance with safety-netting. Must not include diagnosis or treatment.",
                   },
                 },
                 required: ["aiRiskLevel", "aiSummary", "aiReasoning", "aiAdvice"],
@@ -222,17 +239,17 @@ WRITING STYLE:
       .from("chest_pain_assessments")
       .insert({
         age: ageNum,
-        pain_description: painDescription,
+        pain_description: body.painDescription,
         onset,
         duration,
-        triggers: triggers || null,
+        triggers: body.triggers || null,
         improves_with_rest: improvesWithRest,
-        radiation: radiation || null,
-        associated_symptoms: associatedSymptoms || null,
-        past_medical_history: pastMedicalHistory || null,
-        family_history: familyHistory || null,
-        smoking_history: smokingHistory || null,
-        medications: medications || null,
+        radiation: body.radiation || null,
+        associated_symptoms: body.associatedSymptoms || null,
+        past_medical_history: body.pastMedicalHistory || null,
+        family_history: body.familyHistory || null,
+        smoking_history: body.smokingHistory || null,
+        medications: body.medications || null,
         ai_risk_level: result.aiRiskLevel,
         ai_summary: result.aiSummary,
         ai_reasoning: result.aiReasoning,
