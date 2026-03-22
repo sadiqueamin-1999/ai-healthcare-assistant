@@ -16,7 +16,7 @@ This project demonstrates how structured data collection, rule-based safety logi
 
 ---
 
-## 🧠 System Architecture
+## System Architecture
 
 The system uses a hybrid AI architecture:
 
