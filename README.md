@@ -129,13 +129,13 @@ All scoring rules are visible inside the application.
 
 TEST CASES FOR ALL FOUR MODULES
 
-MODULE 1 — TRIAGE TOOL TEST CASES (/triage):
+MODULE 1 - TRIAGE TOOL TEST CASES (/triage):
 
 A. High Risk
 Message:
 “Hi, I’ve had tightness in my chest since this morning and now it’s spreading to my jaw. I’m feeling breathless too.”
 
-B. Uncertain Risk (GOOD demo)
+B. Uncertain Risk
 Message:
 “Hi, I need to reschedule my appointment for next Wednesday. Can you help me book another time?”
 
@@ -143,7 +143,7 @@ C. Low Risk
 Message:
 “Hi, can you please send me a copy of my last blood test report?”
 
-MODULE 2 — CLINICAL NOTES SUMMARISER TEST CASES (/notes):
+MODULE 2 - CLINICAL NOTES SUMMARISER TEST CASES (/notes):
 
 A. Medium‑Complex Case (Great for timeline)
 Past medical history includes type 2 diabetes since 2018.  
@@ -159,7 +159,7 @@ Chest X-ray: right lower lobe consolidation.
 History of COPD diagnosed 2015.
 
 
-MODULE 3 — LETTER / RESULT EXPLAINER TEST CASES (/explain):
+MODULE 3 - LETTER / RESULT EXPLAINER TEST CASES (/explain):
 
 A. NHS Jargon Letter
 Dear Patient,  
@@ -171,7 +171,7 @@ Your ultrasound shows gallstones without duct dilation.
 Referral to surgery may be considered if symptoms continue.
 
 
-MODULE 4 — CHEST PAIN SCORING TEST CASES (Very Low → Very High):
+MODULE 4 - CHEST PAIN SCORING TEST CASES (Very Low → Very High):
 
 1. VERY LOW RISK
 Musculoskeletal pain
