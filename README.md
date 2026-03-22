@@ -8,7 +8,7 @@ A hybrid rule-based and AI-assisted system to improve communication across the N
 The AI Clinical Communication Assistant is a prototype system built for NHS Hack Day.  
 It addresses one of the most widely documented challenges in NHS care: communication failures between patients, clinicians, and services.
 
-- Research highlights that poor communication is a major driver of dissatisfaction in the NHS and contributes to delays, misunderstandings, and avoidable harm.(https://digital.nhs.uk/data-and-information/publications/statistical/nhs-workforce-statistics/december-2025)  
+- Research highlights that poor communication is a major driver of dissatisfaction in the NHS and contributes to delays, misunderstandings, and avoidable harm. (https://digital.nhs.uk/data-and-information/publications/statistical/nhs-workforce-statistics/december-2025)  
 - Long‑term patients often experience fragmented communication that leads to missed symptoms or unsafe delays in escalation.   (https://www.england.nhs.uk/south/wp-content/uploads/sites/6/2021/08/nhsmail-guide-for-organisations.pdf)  
 - Clinicians are simultaneously burdened by heavy documentation and admin workloads, highlighted in Microsoft’s 2025 Ignite healthcare briefing. (https://bradford.connecttosupport.org/media/xzjferi4/nhsmail-faqs-updated-12-02-21-pdf-version.pdf)
 
